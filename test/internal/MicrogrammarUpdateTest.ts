@@ -7,6 +7,8 @@ import * as assert from "power-assert";
 
 import {Integer} from "../../src/Primitives";
 import {RepSep} from "../../src/Rep";
+import { PARENT_STANZA } from "./mavenGrammars";
+import { POM_WITH_DEPENDENCY_MANAGEMENT } from "../MatchingMachineTest";
 
 describe("MicrogrammarUpdateTest", () => {
 
@@ -190,6 +192,15 @@ describe("MicrogrammarUpdateTest", () => {
         } else {
             assert.fail("Didn't match");
         }
+    });
+
+    it("update and validate properties", () => {
+        const results = PARENT_STANZA.findMatches(POM_WITH_DEPENDENCY_MANAGEMENT) as any;
+        assert(results.length === 1);
+        assert(results[0].gav, "gav non-null");
+        const updatable = Microgrammar.updatable<any>(results, POM_WITH_DEPENDENCY_MANAGEMENT);
+        assert(updatable.matches[0].gav, "gav still non-null");
+        assert(updatable.matches[0].gav.artifact === "spring-boot-starter-parent");
     });
 
 });

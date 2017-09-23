@@ -136,6 +136,10 @@ export class TreePatternMatch extends PatternMatch {
                 } else {
                     output[key] = this.$valueMatches[key];
                 }
+                if (!output[key]) {
+                    // console.log("Something wrong with key %s with value %s, valueMatches=%s",
+                    //     key, JSON.stringify(value), this.$valueMatches[key].join(","))
+                }
             }
         }
         return output;
