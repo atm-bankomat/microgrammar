@@ -198,6 +198,7 @@ describe("MicrogrammarUpdateTest", () => {
         const results = PARENT_STANZA.findMatches(POM_WITH_DEPENDENCY_MANAGEMENT) as any;
         assert(results.length === 1);
         assert(results[0].gav, "gav non-null");
+        console.log("gav is " + JSON.stringify(results[0].gav));
         const updatable = Microgrammar.updatable<any>(results, POM_WITH_DEPENDENCY_MANAGEMENT);
         assert(updatable.matches[0].gav, "gav still non-null");
         assert(updatable.matches[0].gav.artifact === "spring-boot-starter-parent");

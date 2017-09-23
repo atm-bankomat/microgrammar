@@ -19,7 +19,7 @@ export abstract class PatternMatch {
     /**
      * Value extracted from matcher.
      * @return the $value that is extracted from this matcher. May be a
-     * scalar or an array, or a nested structure. May or not be the
+     * scalar or an array, or a nested structure. May or may not be the
      * same as $matched property.
      */
     public abstract $value: any;
@@ -137,8 +137,10 @@ export class TreePatternMatch extends PatternMatch {
                     output[key] = this.$valueMatches[key];
                 }
                 if (!output[key]) {
-                    // console.log("Something wrong with key %s with value %s, valueMatches=%s",
-                    //     key, JSON.stringify(value), this.$valueMatches[key].join(","))
+                    // This code has the assumption that the property is either a match or a simple value.
+                    // in fact, this could be a function output.
+                    console.log("Something wrong with key %s with value %s",
+                        key, JSON.stringify(value))
                 }
             }
         }

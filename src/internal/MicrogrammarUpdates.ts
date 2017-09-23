@@ -48,6 +48,8 @@ export class MicrogrammarUpdates {
                     this.addMatchesAsProperties(initialValue, cs, submatch);
                 } else if (submatch) {
                     initialValue = submatch.$value;
+                } else {
+                    console.log(`in match ${match.$matcherId}(= ${match.$matched}) value of ${key} is falsy`)
                 }
 
                 const privateProperty = "_" + key;
@@ -81,7 +83,7 @@ export class MicrogrammarUpdates {
                 });
             }
         } else {
-            // console.log(`Not a tree pattern match: ${JSON.stringify(match)}`);
+            console.log(`Not a tree pattern match: ${JSON.stringify(match)}`);
         }
     }
 }
