@@ -2,7 +2,12 @@ import { InputState } from "../InputState";
 import { LazyMatchingLogic, Matcher, MatchingLogic, Term } from "../Matchers";
 import { isSuccessfulMatch, MatchFailureReport, MatchPrefixResult, matchPrefixSuccess } from "../MatchPrefixResult";
 import { Microgrammar } from "../Microgrammar";
-import { isSpecialMember, PatternMatch, TreePatternMatch } from "../PatternMatch";
+import {
+    ComputedThing,
+    isSpecialMember, isTreePatternMatch, NestedThing, PatternMatch, ScalarThing, TerminalPatternMatch,
+    ThingInsideATreePatternMatch,
+    TreePatternMatch,
+} from "../PatternMatch";
 import { Literal, Regex } from "../Primitives";
 
 import { SkipCapable, WhiteSpaceHandler } from "../Config";
@@ -15,7 +20,7 @@ import { readyToMatch } from "../internal/Whitespace";
 export type TermDef = Term | string | RegExp;
 
 export interface MatchVeto { $id: string; veto: ((ctx: {}, thisMatchContext: {}, parseContext: {}) => boolean); }
-export interface ContextComputation { $id: string; compute: ((ctx: {}) => any ); }
+export interface ContextComputation { $id: string; compute: ((ctx: {}) => any); }
 
 function isMatchVeto(thing: MatchStep): thing is MatchVeto {
     return isSpecialMember(thing.$id);
@@ -66,7 +71,7 @@ export class Concat implements LazyMatchingLogic, WhiteSpaceHandler, SkipCapable
     // for required prefix etc.
     private firstMatcher: Matcher;
 
-    private constructor(public definitions: any) {}
+    private constructor(public definitions: any) { }
 
     /**
      * Evaluate all members to ready this Concat for use.
@@ -91,9 +96,9 @@ export class Concat implements LazyMatchingLogic, WhiteSpaceHandler, SkipCapable
                         throw new Error(`No arg function [${stepName}] is invalid as a matching step`);
                     }
                     if (isSpecialMember(stepName)) {
-                        this.matchSteps.push({$id: stepName, veto: def});
+                        this.matchSteps.push({ $id: stepName, veto: def });
                     } else {
-                        this.matchSteps.push({$id: stepName, compute: def});
+                        this.matchSteps.push({ $id: stepName, compute: def });
                     }
                 } else {
                     // It's a normal matcher
@@ -123,9 +128,8 @@ export class Concat implements LazyMatchingLogic, WhiteSpaceHandler, SkipCapable
     }
 
     public matchPrefix(initialInputState: InputState, thisMatchContext, parseContext): MatchPrefixResult {
-        const bindingTarget = {};
-        const matches: PatternMatch[] = [];
         let currentInputState = initialInputState;
+        const things: ThingInsideATreePatternMatch[] = [];
         let matched = "";
         for (const step of this.matchSteps) {
             if (isMatcher(step)) {
@@ -136,31 +140,29 @@ export class Concat implements LazyMatchingLogic, WhiteSpaceHandler, SkipCapable
                 const reportResult = step.matchPrefix(currentInputState, thisMatchContext, parseContext);
                 if (isSuccessfulMatch(reportResult)) {
                     const report = reportResult.match;
-                    matches.push(report);
                     currentInputState = currentInputState.consume(report.$matched,
                         `Concat step [${reportResult.$matcherId}] matched ${reportResult.$matched}`);
                     matched += report.$matched;
-                    if (reportResult.capturedStructure) {
-                        // Bind the nested structure if necessary
-                        bindingTarget[step.$id] = reportResult.capturedStructure;
+                    if (isTreePatternMatch(report)) {
+                        things.push(new NestedThing(step.$id, report, step));
                     } else {
-                        // otherwise, save the matcher's value.
-                        bindingTarget[step.$id] = report.$value;
+                        things.push(new ScalarThing(step.$id, report as TerminalPatternMatch));
                     }
                 } else {
-                    return new MatchFailureReport(this.$id, initialInputState.offset, bindingTarget,
+                    return new MatchFailureReport(this.$id, initialInputState.offset, null,
                         `Failed at step '${step.name}' due to ${(reportResult as any).description}`);
                 }
             } else {
                 // It's a function taking the contexts.
                 // See if we should stop matching.
                 if (isMatchVeto(step)) {
-                    if (step.veto(bindingTarget, thisMatchContext, parseContext) === false) {
-                        return new MatchFailureReport(this.$id, initialInputState.offset, bindingTarget,
-                          `Match vetoed by ${step.$id}`);
+                    if (step.veto(this.valuesFromThings(things), thisMatchContext, parseContext) === false) {
+                        return new MatchFailureReport(this.$id, initialInputState.offset, null,
+                            `Match vetoed by ${step.$id}`);
                     }
                 } else {
-                    bindingTarget[step.$id] = step.compute(bindingTarget);
+                    // the context is made of the things processed so far.
+                    things.push(new ComputedThing(step.$id, step.compute(this.valuesFromThings(things))));
                 }
             }
         }
@@ -168,9 +170,25 @@ export class Concat implements LazyMatchingLogic, WhiteSpaceHandler, SkipCapable
             this.$id,
             matched,
             initialInputState.offset,
-            this.matchSteps.filter(m => (m as any).matchPrefix) as Matcher[],
-            matches,
-            bindingTarget), bindingTarget);
+            things), null);
+    }
+
+    private valuesFromThings(things: ThingInsideATreePatternMatch[]): object {
+        const output = {};
+        for (const p of things) {
+            Object.defineProperty(output, p.name, {
+                get() {
+                    return p.value;
+                },
+                set(newValue) {
+                    p.update(newValue);
+                },
+                enumerable: true,
+                configurable: true,
+            });
+        }
+        Object.preventExtensions(output);
+        return output;
     }
 
 }

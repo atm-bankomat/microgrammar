@@ -17,8 +17,8 @@ describe("Nesting in Microgrammar.fromString", () => {
         const result = mg.findMatches(content) as any[];
         assert(result.length === 1);
         assert(result[0].catStatement.length === 2);
-        assert(result[0].catStatement[0].bug = "fleas");
-        assert(result[0].catStatement[1].bug = "worms");
+        assert(result[0].catStatement[0].bug === "fleas");
+        assert(result[0].catStatement[1].bug === "worms");
     });
 
     it("uses dictionary in nested sentences", () => {
@@ -34,8 +34,8 @@ describe("Nesting in Microgrammar.fromString", () => {
         const result = mg.findMatches(content) as any[];
         assert(result.length === 1);
         assert(result[0].catProblems.length === 2);
-        assert(result[0].catProblems[0].bug = "fleas");
-        assert(result[0].catProblems[1].bug = "worms");
+        assert(result[0].catProblems[0].bug === "fleas");
+        assert(result[0].catProblems[1].bug === "worms");
         assert.deepEqual(result[0].catActivities, ["grooming", "playing"]);
     });
 

@@ -1,4 +1,3 @@
-import { Matcher } from "./Matchers";
 
 /**
  * Returned when we failed to match prefix
@@ -15,11 +14,12 @@ export interface DismatchReport {
  * To ensure this separation works cleanly, not bind user data to fields beginning with $.
  */
 export abstract class PatternMatch {
+    public abstract $kind: "tree" | "terminal" | "undefined" | "array";
 
     /**
      * Value extracted from matcher.
      * @return the $value that is extracted from this matcher. May be a
-     * scalar or an array, or a nested structure. May or not be the
+     * scalar or an array, or a nested structure. May or may not be the
      * same as $matched property.
      */
     public abstract $value: any;
@@ -53,6 +53,7 @@ export function isPatternMatch(mpr: PatternMatch | DismatchReport): mpr is Patte
  * Simple pattern pattern. No submatches.
  */
 export class TerminalPatternMatch extends PatternMatch {
+    public $kind: "terminal" = "terminal";
 
     constructor(matcherId: string,
                 matched: string,
@@ -64,9 +65,30 @@ export class TerminalPatternMatch extends PatternMatch {
 }
 
 /**
+ * Simple pattern pattern. No submatches.
+ */
+export class ArrayPatternMatch extends PatternMatch {
+    public $kind: "array" = "array";
+
+    get $value() {
+        return this.contents.map(m => m.$value);
+    }
+
+    constructor(matcherId: string,
+                matched: string,
+                offset: number,
+                private contents: PatternMatch[]) {
+        super(matcherId, matched, offset);
+    }
+
+}
+
+/**
  * Return when an optional matcher matches
  */
 export class UndefinedPatternMatch extends PatternMatch {
+
+    public $kind: "undefined" = "undefined";
 
     public $value = undefined;
 
@@ -76,6 +98,71 @@ export class UndefinedPatternMatch extends PatternMatch {
     }
 }
 
+export interface ThingInsideATreePatternMatch {
+     kind: "scalar" | "tree" | "compute";
+     name: string;
+     match: PatternMatch | null;
+     value: any; /* varies */
+     update(newValue: any);
+}
+
+export function isScalarThing(t: ThingInsideATreePatternMatch): t is ScalarThing {
+    return t.kind === "scalar";
+}
+export class ScalarThing {
+    public kind: "scalar" = "scalar";
+
+    private originalValue: any;
+    private updatedValue: any;
+
+    constructor(public name: string,
+                public match: TerminalPatternMatch) {
+        this.originalValue = match.$value;
+    }
+
+    get value(): string {
+        return this.updatedValue || this.originalValue;
+    }
+
+    public update(newValue: any) {
+        this.updatedValue = newValue;
+    }
+}
+
+export function isNestedThing(t: ThingInsideATreePatternMatch): t is NestedThing {
+    return t.kind === "tree";
+}
+export class NestedThing implements ThingInsideATreePatternMatch {
+    public kind: "tree" = "tree";
+
+    constructor(public name: string,
+                public match: TreePatternMatch,
+                public matcher: any /* really it's a Concat. avoiding circular reference */) {}
+
+    get value(): {} {
+        const output = this.match.submatches();
+        return output;
+    }
+
+    public update(newValue: any) {
+        throw new Error("I don't think we have updated nested values");
+    }
+}
+
+export function isComputedThing(t: ThingInsideATreePatternMatch): t is ComputedThing {
+    return t.kind === "compute";
+}
+export class ComputedThing {
+    public kind: "compute" = "compute";
+    public match = null;
+    constructor(public name: string,
+                public value: any) {}
+
+     public update(newValue: any) {
+       throw new Error("I don't think we update a computed value, but we could");
+     }
+}
+
 /**
  * Represents a complex pattern match. Sets properties to expose structure.
  * In the case of string properties, where we can't add provide the whole PatternMatch,
@@ -83,68 +170,69 @@ export class UndefinedPatternMatch extends PatternMatch {
  */
 export class TreePatternMatch extends PatternMatch {
 
+    public $kind: "tree" = "tree";
+
     // JESS: can we not have a $value
 
-    public readonly $valueMatches = {};
+    get $valueMatches() {
+        const output = {};
+        for (const thing of this.$thingsInside.filter(t => isScalarThing(t))) {
+            output[thing.name] = thing.match;
+        }
+        return output;
+    }
 
-    public readonly $value;
+    get $value() {
+        return this;
+    }
 
     constructor(matcherId: string,
                 matched: string,
                 offset: number,
-                matchers: Matcher[],
-                subMatches: PatternMatch[],
-                capturedStructure: {}) {
+                public $thingsInside: ThingInsideATreePatternMatch[]) {
         super(matcherId, matched, offset);
-        this.$value = {};
 
-        // Copy top level context properties
-        for (const p in capturedStructure) {
-            if (!isSpecialMember(p) && typeof capturedStructure[p] !== "function") {
-                this[p] = capturedStructure[p];
-            }
-        }
-
-        for (let i = 0; i < subMatches.length; i++) {
-            const match = subMatches[i];
-            const name = matchers[i].name;
-            if (!isSpecialMember(name)) {
-                const value = subMatches[i].$value;
-                this.$value[matchers[i].name] = value;
-                if (isTreePatternMatch(match)) {
-                    this[name] = match;
+        for (const p of $thingsInside) {
+            if (!isSpecialMember(p.name)) {
+                if (isNestedThing(p)) {
+                    Object.defineProperty(this, p.name, {
+                        get() {
+                            return p.match;
+                        },
+                        enumerable: true,
+                        configurable: true,
+                    });
                 } else {
-                    // if the context defined it already, let that stand
-                    if (this[name] === undefined) {
-                        this[name] = value;
-                    }
-                    // We've got nowhere to put the matching information on a simple value,
-                    // so create a parallel property on the parent with an out of band name
-                    this.$valueMatches[matchers[i].name] = subMatches[i];
+                    Object.defineProperty(this, p.name, {
+                        get() {
+                            return p.value;
+                        },
+                        enumerable: true,
+                        configurable: true,
+                    });
                 }
             }
         }
     }
 
     public submatches() {
-        const output = {};
-        for (const key of Object.getOwnPropertyNames(this)) {
-            if (key.charAt(0) !== "$") {
-                const value = this[key];
-                if (isPatternMatch(value)) {
-                    output[key] = value;
-                } else {
-                    output[key] = this.$valueMatches[key];
-                }
-            }
-        }
-        return output;
+        return valuesFromThings(this.$thingsInside);
     }
 
 }
 
+function valuesFromThings(things: ThingInsideATreePatternMatch[]): object {
+    const output = {};
+    for (const p of things) {
+        if (!isSpecialMember(p.name)) {
+            output[p.name] = p.value;
+        }
+    }
+    return output;
+}
+
 export function isTreePatternMatch(om: PatternMatch): om is TreePatternMatch {
-    return om != null && (om as TreePatternMatch).submatches !== undefined;
+    return om.$kind === "tree";
 }
 
 /**

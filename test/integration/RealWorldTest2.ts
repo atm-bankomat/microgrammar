@@ -94,13 +94,15 @@ export interface RawAnnotation {
 
 export const ChangeControlledMethodGrammar = Microgrammar.fromDefinitions<ChangeControlledMethod>({
     annotations: new Rep1(AnyAnnotation),
-    _check(ctx: any) {
+    changeControlledAnnotation(ctx: any) {
         const found = ctx.annotations.filter(a => a.name === "ChangeControlled");
         if (found.length === 0) {
-            return false;
+            return undefined;
         }
-        ctx.changeControlledAnnotation = found;
-        return true;
+        return found;
+    },
+    _check(ctx: any) {
+        return (ctx.changeControlledAnnotation !== undefined);
     },
     _visibilityModifier: "public",
     type: JAVA_IDENTIFIER,

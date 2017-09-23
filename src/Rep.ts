@@ -2,7 +2,7 @@ import { InputState } from "./InputState";
 import { MatchingLogic } from "./Matchers";
 import { toMatchingLogic } from "./matchers/Concat";
 import { isSuccessfulMatch, MatchFailureReport, MatchPrefixResult, matchPrefixSuccess } from "./MatchPrefixResult";
-import { PatternMatch, TerminalPatternMatch } from "./PatternMatch";
+import { ArrayPatternMatch, PatternMatch, TerminalPatternMatch } from "./PatternMatch";
 
 import { WhiteSpaceHandler } from "./Config";
 import { readyToMatch } from "./internal/Whitespace";
@@ -117,10 +117,10 @@ export class Repetition implements MatchingLogic, WhiteSpaceHandler {
         );
 
         return (matches.length >= this.min) ?
-            matchPrefixSuccess(new TerminalPatternMatch(this.$id,
+            matchPrefixSuccess(new ArrayPatternMatch(this.$id,
                 matched,
                 is.offset,
-                values)) :
+                matches)) :
             new MatchFailureReport(this.$id, is.offset, {});
     }
 }

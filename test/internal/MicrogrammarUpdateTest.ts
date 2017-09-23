@@ -1,12 +1,14 @@
-import {ChangeSet} from "../../src/internal/ChangeSet";
-import {isSuccessfulMatch} from "../../src/MatchPrefixResult";
-import {Microgrammar} from "../../src/Microgrammar";
-import {Opt} from "../../src/Ops";
+import { ChangeSet } from "../../src/internal/ChangeSet";
+import { isSuccessfulMatch } from "../../src/MatchPrefixResult";
+import { Microgrammar } from "../../src/Microgrammar";
+import { Opt } from "../../src/Ops";
 
 import * as assert from "power-assert";
 
-import {Integer} from "../../src/Primitives";
-import {RepSep} from "../../src/Rep";
+import { Integer } from "../../src/Primitives";
+import { RepSep } from "../../src/Rep";
+import { POM_WITH_DEPENDENCY_MANAGEMENT } from "../MatchingMachineTest";
+import { PARENT_STANZA } from "./mavenGrammars";
 
 describe("MicrogrammarUpdateTest", () => {
 
@@ -190,6 +192,17 @@ describe("MicrogrammarUpdateTest", () => {
         } else {
             assert.fail("Didn't match");
         }
+    });
+
+    it("update and validate properties", () => {
+        const results = PARENT_STANZA.findMatches(POM_WITH_DEPENDENCY_MANAGEMENT) as any;
+        assert(results.length === 1);
+        assert(results[0].gav, "gav non-null");
+        const updatable = Microgrammar.updatable<any>(results, POM_WITH_DEPENDENCY_MANAGEMENT);
+        assert(updatable.matches[0].gav, "gav still non-null");
+        // can't update it though
+        assert.throws(() => {updatable.matches[0].gav = "can't update a function output"});
+        assert(updatable.matches[0].gav.artifact === "spring-boot-starter-parent");
     });
 
 });

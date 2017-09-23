@@ -89,8 +89,8 @@ describe("ContextTest", () => {
             nested: {
                 name: /[a-z]+/,
             },
-            promote(ctx) {
-                ctx.promoted = ctx.nested.name;
+            promoted(ctx) {
+                return ctx.nested.name;
             },
             b: Integer,
             c: Integer,
