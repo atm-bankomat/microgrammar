@@ -201,7 +201,7 @@ describe("MicrogrammarUpdateTest", () => {
         const updatable = Microgrammar.updatable<any>(results, POM_WITH_DEPENDENCY_MANAGEMENT);
         assert(updatable.matches[0].gav, "gav still non-null");
         // can't update it though
-        assert.throws(() => {updatable.matches[0].gav = "can't update a function output"});
+        assert.throws(() => updatable.matches[0].gav = "can't update a function output");
         assert(updatable.matches[0].gav.artifact === "spring-boot-starter-parent");
     });
 

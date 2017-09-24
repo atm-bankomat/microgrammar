@@ -73,21 +73,20 @@ export class MicrogrammarUpdates {
                         enumerable: true,
                         configurable: true,
                     });
-                }
-                else if (isComputedThing(p)) {
+                } else if (isComputedThing(p)) {
                     // updates are not supported
                     Object.defineProperty(target, p.name, {
                         get() {
                             return p.value;
                         },
                         set(newValue) {
-                            throw new Error(`${p.name} was computed in a function in the microgrammar; you can't update it`)
+                            throw new Error(`${p.name} was computed in a function in the microgrammar; you can't update it`);
                         },
                         enumerable: true,
                         configurable: true,
                     });
                 } else {
-                    throw new Error("a new case has been added and it is not supported by update yet: " + p.kind)
+                    throw new Error("a new case has been added and it is not supported by update yet: " + p.kind);
                 }
 
             }
