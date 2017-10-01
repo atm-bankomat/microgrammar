@@ -28,12 +28,6 @@ function main () {
         return 1
     fi
 
-    msg "running tests"
-    if ! npm test; then
-        err "npm test failed"
-        return 1
-    fi
-
     msg ">"
     msg $TRAVIS_PULL_REQUEST
     msg $TRAVIS_PULL_REQUEST_BRANCH
