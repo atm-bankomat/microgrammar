@@ -98,7 +98,7 @@ const SpringBootApp = Microgrammar.fromDefinitions<{ name: string }>({
     _content: optional(JavaParenthesizedExpression),
     _otherAnnotations: zeroOrMore(DiscardedAnnotation),
     _visibility: optional("public"),
-    _class: "class",
+    _class: "class", 
     name: CLASS_NAME,
 });
 ```
