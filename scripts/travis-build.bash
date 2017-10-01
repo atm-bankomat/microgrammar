@@ -34,6 +34,8 @@ function main () {
         return 1
     fi
 
+    msg $TRAVIS_PULL_REQUEST
+    msg $TRAVIS_PULL_REQUEST_BRANCH
 
     local git_tag
     # Publishing the branch privately to npm lets us test downstream projects
