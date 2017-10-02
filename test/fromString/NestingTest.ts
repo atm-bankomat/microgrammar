@@ -1,4 +1,4 @@
-import { Microgrammar } from "../../src/Microgrammar";
+import { Microgrammark } from "../../src/Microgrammar";
 
 import * as assert from "power-assert";
 import { fromString } from "../../src/internal/MicrogrammarSpecParser";
@@ -9,7 +9,7 @@ describe("Nesting in Microgrammar.fromString", () => {
 
     it("nest simple", () => {
         const content = "cats can suffer from fleas and can suffer from worms";
-        const mg = Microgrammar.fromString<{ num: number }>("cats ${catStatement}", {
+        const mg = Microgrammark.fromString<{ num: number }>("cats ${catStatement}", {
             catStatement: new RepSep(fromString("can suffer from ${bug}", {
                 bug: /[a-z]+/,
             }), "and"),
@@ -27,7 +27,7 @@ describe("Nesting in Microgrammar.fromString", () => {
             activity: new Alt("playing", "grooming"),
         };
         const content = "cats can suffer from fleas and can suffer from worms but enjoy grooming & playing";
-        const mg = Microgrammar.fromString<{ num: number }>("cats ${catProblems} but enjoy ${catActivities}", {
+        const mg = Microgrammark.fromString<{ num: number }>("cats ${catProblems} but enjoy ${catActivities}", {
             catProblems: new Rep1Sep(fromString("can suffer from ${bug}", dictionary), "and"),
             catActivities: new Rep1Sep(dictionary.activity, "&"),
         });

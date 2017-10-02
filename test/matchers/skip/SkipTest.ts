@@ -1,4 +1,4 @@
-import { Microgrammar } from "../../../src/Microgrammar";
+import { Microgrammark } from "../../../src/Microgrammar";
 import { Alt } from "../../../src/Ops";
 
 import * as assert from "power-assert";
@@ -9,7 +9,7 @@ import { isSuccessfulMatch } from "../../../src/MatchPrefixResult";
 
 describe("Skip", () => {
 
-    const desirable = Microgrammar.fromDefinitions({
+    const desirable = Microgrammark.fromDefinitions({
         beast: new Alt("dog", "cat", "pig"),
         activity: yadaYadaThenThisButNotThat("spa", "shoplifting"),
         last: yadaYadaThen("happiness"),

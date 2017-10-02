@@ -1,5 +1,5 @@
 import "mocha";
-import { Microgrammar } from "../src/Microgrammar";
+import { Microgrammark } from "../src/Microgrammar";
 import { Alt, firstOf } from "../src/Ops";
 
 import { fail } from "power-assert";
@@ -25,7 +25,7 @@ describe("Left recursion", () => {
     };
     tobeExpression = expression;
     ((expression.expr as Alt).matchers[0] as any)._init();
-    const mg = Microgrammar.fromDefinitions(expression);
+    const mg = Microgrammark.fromDefinitions(expression);
 
     it.skip("should match simple term", () => {
         const input = "2";

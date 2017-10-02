@@ -1,4 +1,4 @@
-import { Microgrammar } from "../../src/Microgrammar";
+import { Microgrammark } from "../../src/Microgrammar";
 import { Opt } from "../../src/Ops";
 import { isPatternMatch } from "../../src/PatternMatch";
 import { RepSep } from "../../src/Rep";
@@ -19,7 +19,7 @@ describe("MicrogrammarFromString", () => {
 
     it("literal", () => {
         const content = "foo ";
-        const mg = Microgrammar.fromString("foo");
+        const mg = Microgrammark.fromString("foo");
         const result = mg.findMatches(content);
         // console.log("Result is " + JSON.stringify(result));
         assert(result.length === 1);
@@ -28,7 +28,7 @@ describe("MicrogrammarFromString", () => {
 
     it("XML element", () => {
         const content = "<foo>";
-        const mg = Microgrammar.fromString("<${name}>", {
+        const mg = Microgrammark.fromString("<${name}>", {
             name: /[a-zA-Z0-9]+/,
         });
         const result = mg.findMatches(content);
@@ -40,7 +40,7 @@ describe("MicrogrammarFromString", () => {
     });
 
     function testTwoXmlElements(content: string, first: string, second: string) {
-        const mg = Microgrammar.fromString("<${name}>", {
+        const mg = Microgrammark.fromString("<${name}>", {
             name: /[a-zA-Z0-9]+/,
         });
         const result = mg.findMatches(content);
@@ -82,10 +82,10 @@ describe("MicrogrammarFromString", () => {
 
     it("2 XML elements via nested microgrammar", () => {
         const content = "<first><second>";
-        const element = Microgrammar.fromString("<${namex}>", {
+        const element = Microgrammark.fromString("<${namex}>", {
             namex: /[a-zA-Z0-9]+/,
         });
-        const mg = Microgrammar.fromString("${first}${second}", {
+        const mg = Microgrammark.fromString("${first}${second}", {
             first: element,
             second: element,
         });
@@ -100,7 +100,7 @@ describe("MicrogrammarFromString", () => {
 
     it("2 elements: whitespace insensitive", () => {
         const content = "<first>notxml";
-        const mg = Microgrammar.fromString<{ namex: string }>("<${namex}> notxml", {
+        const mg = Microgrammark.fromString<{ namex: string }>("<${namex}> notxml", {
             namex: /[a-zA-Z0-9]+/,
         });
         const result = mg.findMatches(content);
@@ -110,7 +110,7 @@ describe("MicrogrammarFromString", () => {
 
     it("2 elements: whitespace sensitive: match", () => {
         const content = "<first>  notxml";
-        const mg = Microgrammar.fromString<{ namex: string }>("<${namex}> notxml", {
+        const mg = Microgrammark.fromString<{ namex: string }>("<${namex}> notxml", {
             ...WhiteSpaceSensitive,
             namex: /[a-zA-Z0-9]+/,
         });
@@ -120,7 +120,7 @@ describe("MicrogrammarFromString", () => {
 
     it("2 elements: whitespace sensitive: no match", () => {
         const content = "<first>  notxml";
-        const mg = Microgrammar.fromString<{ namex: string[] }>("<${namex}> notxml", {
+        const mg = Microgrammark.fromString<{ namex: string[] }>("<${namex}> notxml", {
             ...WhiteSpaceSensitive,
             namex: /[a-zA-Z0-9]+/,
         });
@@ -130,7 +130,7 @@ describe("MicrogrammarFromString", () => {
 
     it("2 elements: whitespace sensitive: match with return", () => {
         const content = "<first>\n\tnotxml";
-        const mg = Microgrammar.fromString<{ namex: string[] }>("<${namex}>\n\tnotxml", {
+        const mg = Microgrammark.fromString<{ namex: string[] }>("<${namex}>\n\tnotxml", {
             namex: /[a-zA-Z0-9]+/,
         });
         const result = mg.findMatches(content);
@@ -141,7 +141,7 @@ describe("MicrogrammarFromString", () => {
         interface Named {
             name: string;
         }
-        const mg = Microgrammar.fromString<Named>("${name}", {
+        const mg = Microgrammark.fromString<Named>("${name}", {
             name: /[A-Z][a-z]+/,
         });
         const result = mg.findMatches("Greg Tony");
@@ -163,7 +163,7 @@ describe("MicrogrammarFromString", () => {
             name: /[a-zA-Z0-9]+/,
             rx: ">",
         };
-        const mg = Microgrammar.fromString("${first}${second}", {
+        const mg = Microgrammark.fromString("${first}${second}", {
             first: element,
             second: new Opt(element),
         });
@@ -182,7 +182,7 @@ describe("MicrogrammarFromString", () => {
             name: /[a-zA-Z0-9]+/,
             rx: ">",
         };
-        const mg = Microgrammar.fromString("${first}${second}", {
+        const mg = Microgrammark.fromString("${first}${second}", {
             first: element,
             second: new Opt(element),
         });
@@ -203,7 +203,7 @@ describe("MicrogrammarFromString", () => {
             name: /[a-zA-Z0-9]+/,
             rx: ">",
         };
-        const mg = Microgrammar.fromString("${first}${second}", {
+        const mg = Microgrammark.fromString("${first}${second}", {
             first: element,
             second: element,
         });
@@ -221,7 +221,7 @@ describe("MicrogrammarFromString", () => {
     };
 
     function dependencyGrammar() {
-        return Microgrammar.fromString<VersionedArtifact>(
+        return Microgrammark.fromString<VersionedArtifact>(
             `<dependency>
        <groupId> \${group} </groupId>
        <artifactId> \${artifact} </artifactId>
@@ -263,13 +263,13 @@ describe("MicrogrammarFromString", () => {
 
     it("find version of real world POM", () => {
         const matches = ARTIFACT_VERSION_GRAMMAR.findMatches(RealWorldPom) as any as VersionedArtifact[];
-        assert (matches.length > 0);
+        assert(matches.length > 0);
         assert(matches[0].version === "0.1.0-SNAPSHOT");
     });
 
     function namesGrammar() {
         const names = new RepSep(/[a-zA-Z0-9]+/, ",");
-        return Microgrammar.fromString("${dogs} **** ${cats}", {
+        return Microgrammark.fromString("${dogs} **** ${cats}", {
             dogs: names,
             cats: names,
         });
@@ -277,21 +277,21 @@ describe("MicrogrammarFromString", () => {
 
     it("extract empty rep structure", () => {
         const matches = namesGrammar().findMatches("****") as any[];
-        assert (matches.length === 1);
+        assert(matches.length === 1);
         assert(matches[0].dogs.length === 0);
         assert(matches[0].cats.length === 0);
     });
 
     it("extract non-empty rep structure", () => {
         const matches = namesGrammar().findMatches("Fido **** Felix, Oscar") as any[];
-        assert (matches.length === 1);
+        assert(matches.length === 1);
         assert.deepEqual(matches[0].dogs, ["Fido"]);
         assert.deepEqual(matches[0].cats, ["Felix", "Oscar"]);
     });
 
     it("handles escaped literal $", () => {
         const content = "The $AUD has risen lately";
-        const mg = Microgrammar.fromString("The \$${currency} has risen lately", {
+        const mg = Microgrammark.fromString("The \$${currency} has risen lately", {
             currency: /[A-Z]{3}/,
         });
         const result = mg.findMatches(content);
@@ -306,7 +306,7 @@ describe("MicrogrammarFromString", () => {
             amount: Float,
         };
         const content = "The recent movement in the AUD has gained you $762.49";
-        const mg = Microgrammar.fromString<any>("The recent movement in the ${currency} has gained you $${amount}", dictionary);
+        const mg = Microgrammark.fromString<any>("The recent movement in the ${currency} has gained you $${amount}", dictionary);
         const result = mg.findMatches(content) as any[];
         assert(result.length === 1);
         assert(result[0].currency === "AUD");

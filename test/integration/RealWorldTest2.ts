@@ -1,7 +1,7 @@
 import { JavaBlock, JavaParenthesizedExpression } from "../../src/matchers/lang/cfamily/java/JavaBody";
 import { isSuccessfulMatch } from "../../src/MatchPrefixResult";
 
-import { Microgrammar } from "../../src/Microgrammar";
+import { Microgrammark } from "../../src/Microgrammar";
 import { Opt } from "../../src/Ops";
 
 import * as assert from "power-assert";
@@ -71,7 +71,7 @@ describe("GrammarWithOnlyARep", () => {
 
 export const JAVA_IDENTIFIER = /[a-zA-Z_$][a-zA-Z0-9_$]*/;
 
-export const AnyAnnotation = Microgrammar.fromDefinitions<RawAnnotation>({
+export const AnyAnnotation = Microgrammark.fromDefinitions<RawAnnotation>({
     _at: "@",
     name: JAVA_IDENTIFIER,
     _content: new Opt(JavaParenthesizedExpression),
@@ -92,7 +92,7 @@ export interface RawAnnotation {
 
 }
 
-export const ChangeControlledMethodGrammar = Microgrammar.fromDefinitions<ChangeControlledMethod>({
+export const ChangeControlledMethodGrammar = Microgrammark.fromDefinitions<ChangeControlledMethod>({
     annotations: new Rep1(AnyAnnotation),
     _check(ctx: any) {
         const found = ctx.annotations.filter(a => a.name === "ChangeControlled");
@@ -109,7 +109,7 @@ export const ChangeControlledMethodGrammar = Microgrammar.fromDefinitions<Change
     body: JavaBlock,
 });
 
-export const GrammarWithOnlyARep = Microgrammar.fromDefinitions<any>({
+export const GrammarWithOnlyARep = Microgrammark.fromDefinitions<any>({
     annotations: new Rep(AnyAnnotation),
 });
 
