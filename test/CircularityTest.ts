@@ -1,5 +1,5 @@
 import "mocha";
-import { Microgrammar } from "../src/Microgrammar";
+import { Microgrammart } from "../src/Microgrammar";
 import { firstOf } from "../src/Ops";
 import { JAVA_IDENTIFIER } from "./integration/RealWorldTest2";
 
@@ -30,7 +30,7 @@ describe("Circularity", () => {
     genericType2._init();
 
     // Keep the type simple as we don't need full definition
-    const typeGrammar = Microgrammar.fromDefinitions<{ type: { name: string, param: any } }>({
+    const typeGrammar = Microgrammart.fromDefinitions<{ type: { name: string, param: any } }>({
         type,
     });
 

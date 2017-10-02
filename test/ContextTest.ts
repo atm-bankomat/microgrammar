@@ -2,7 +2,7 @@ import * as assert from "power-assert";
 import { inputStateFromString } from "../src/internal/InputStateFactory";
 import { Concat } from "../src/matchers/Concat";
 import { isSuccessfulMatch, SuccessfulMatch } from "../src/MatchPrefixResult";
-import { Microgrammar } from "../src/Microgrammar";
+import { Microgrammart } from "../src/Microgrammar";
 
 import { Integer, LowercaseBoolean } from "../src/Primitives";
 
@@ -100,7 +100,7 @@ describe("ContextTest", () => {
     });
 
     it("handles multiple bound matches in microgrammar", () => {
-        const cc = Microgrammar.fromDefinitions({
+        const cc = Microgrammart.fromDefinitions({
             nested: {
                 name: /[a-z]+/,
             },
@@ -115,7 +115,7 @@ describe("ContextTest", () => {
     });
 
     it("doesn't pollute parent context in microgrammar", () => {
-        const cc = Microgrammar.fromDefinitions({
+        const cc = Microgrammart.fromDefinitions({
             nested: {
                 name: /[a-z]+/,
                 shouty: ctx => ctx.name.toLocaleUpperCase(),
@@ -130,7 +130,7 @@ describe("ContextTest", () => {
     });
 
     it("handles nested bound matches in microgrammar", () => {
-        const cc = Microgrammar.fromDefinitions({
+        const cc = Microgrammart.fromDefinitions({
             nested: {
                 name: /[a-z]+/,
                 shouty: ctx => ctx.name.toLocaleUpperCase(),
@@ -145,7 +145,7 @@ describe("ContextTest", () => {
     });
 
     it("can change previously bound match", () => {
-        const cc = Microgrammar.fromDefinitions({
+        const cc = Microgrammart.fromDefinitions({
             name: /[a-z]+/,
             b: Integer,
             c: Integer,
@@ -158,7 +158,7 @@ describe("ContextTest", () => {
 
     // TODO this seems to be really strange behavior, but we can work around it for now in users
     it.skip("can undefine previously bound match", () => {
-        const cc = Microgrammar.fromDefinitions({
+        const cc = Microgrammart.fromDefinitions({
             name: /[a-z]+/,
             b: Integer,
             c: Integer,

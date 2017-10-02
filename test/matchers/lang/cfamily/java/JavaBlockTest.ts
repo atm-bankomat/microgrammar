@@ -1,5 +1,5 @@
 import { JavaBlock, javaBlockContaining } from "../../../../../src/matchers/lang/cfamily/java/JavaBody";
-import { Microgrammar } from "../../../../../src/Microgrammar";
+import { Microgrammart } from "../../../../../src/Microgrammar";
 import { PatternMatch } from "../../../../../src/PatternMatch";
 import { Regex } from "../../../../../src/Primitives";
 
@@ -62,7 +62,7 @@ describe("JavaBlock", () => {
     it("should match inner structure", () => {
         const balanced = "{ x = y; }";
         const is = inputStateFromString(balanced);
-        const inner = Microgrammar.fromDefinitions({
+        const inner = Microgrammart.fromDefinitions({
             left: new Regex(/[a-z]+/),
             equals: "=",
             right: "y",

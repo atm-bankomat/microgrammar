@@ -1,7 +1,7 @@
 import assert = require("power-assert");
 
 import { Term } from "../../src/Matchers";
-import { Microgrammar } from "../../src/Microgrammar";
+import { Microgrammart } from "../../src/Microgrammar";
 import { Integer, LowercaseBoolean } from "../../src/Primitives";
 
 import { Alt } from "../../src/Ops";
@@ -30,7 +30,7 @@ describe("Parsing HCL", () => {
 
     // Function so as not to trigger eager loading, which can fail tests
     function hclString() {
-        return Microgrammar.fromString(`"\${stuffUntilNextQuote}"`, {
+        return Microgrammart.fromString(`"\${stuffUntilNextQuote}"`, {
             stuffUntilNextQuote: takeUntil('"'),
         });
     }
@@ -38,7 +38,7 @@ describe("Parsing HCL", () => {
     const hclNumber = Integer;
 
     it("should find key/value pairs from string", () => {
-        const mg = Microgrammar.fromString("${key} = ${value}", {
+        const mg = Microgrammart.fromString("${key} = ${value}", {
             key: /[a-z_]+/,
             value: new Alt(new Alt(LowercaseBoolean, hclString()), hclNumber),
         });
@@ -50,12 +50,12 @@ describe("Parsing HCL", () => {
     });
 
     it("should find number key/value pairs from definitions", () => {
-        const mg = Microgrammar.fromString("${key} = ${value}", {
+        const mg = Microgrammart.fromString("${key} = ${value}", {
             key: /[a-z_]+/,
             value: new Alt(new Alt(LowercaseBoolean, hclString()), hclNumber),
         });
 
-        const mg2 = Microgrammar.fromDefinitions({
+        const mg2 = Microgrammart.fromDefinitions({
             key: /[a-z_]+/,
             _equals: "=",
             value: hclNumber,
