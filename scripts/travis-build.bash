@@ -159,7 +159,7 @@ function main () {
             err "failed to set git user name"
             return 1
         fi
-        if ! git tag "$git_tag" -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"; then
+        if ! git tag "$git_tag" $TRAVIS_PULL_REQUEST_SHA -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"; then
             err "failed to create git tag: $git_tag"
             return 1
         fi
