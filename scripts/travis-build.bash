@@ -21,24 +21,24 @@ function main () {
         err "tslint failed"
         return 1
     fi
-
+    
     msg "compiling typescript"
     if ! npm run compile; then
         err "typescript compilation failed"
         return 1
     fi
-
+    
     msg "running tests"
     if ! npm test; then
         err "npm test failed"
         return 1
     fi
-
+    
     msg "Do I see this here"
     msg $TRAVIS_PULL_REQUEST
     msg $TRAVIS_PULL_REQUEST_BRANCH
     msg "ok great"
-
+    
     local git_tag
     # Publishing the branch privately to npm lets us test downstream projects
     if [[ $TRAVIS_PULL_REQUEST != false && $TRAVIS_PULL_REQUEST_BRANCH != master ]] ; then
@@ -50,9 +50,10 @@ function main () {
                 err "failed to parse name in package.json: $current_module_name"
                 return 1
             fi
+            local module_sfx=$(echo $TRAVIS_PULL_REQUEST_BRANCH | tr '/' '_')
             local branch_module_name
-            branch_module_name="${current_module_name}_$TRAVIS_PULL_REQUEST_BRANCH"
-
+            branch_module_name="${current_module_name}_$module_sfx"
+            
             # update the package.json
             local temp_package_json
             temp_package_json=$(mktemp)
@@ -60,7 +61,7 @@ function main () {
                 err "failed to get a temp file"
                 return 1
             fi
-
+            
             if ! mv package.json "$temp_package_json"; then
                 err "failed to rename package.json to $temp_package_json"
                 return 1
@@ -70,14 +71,14 @@ function main () {
                 return 1
             fi
             trap "rm -f $temp_package_json" RETURN
-
+            
             # create this file so we can use npm show on private modules
             msg "creating local .npmrc using NPM token from environment"
             if ! ( umask 077 && echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc" ); then
                 err "failed to create $HOME/.npmrc"
                 return 1
             fi
-
+            
             # is there already one of these published ?
             local last_existing_version
             last_existing_version=$(npm show "$branch_module_name" version)
@@ -94,13 +95,13 @@ function main () {
                     err "failed to update version in package.json"
                     return 1
                 fi
-
+                
                 if ! npm version --no-git-tag-version -f patch; then
                     err "failed to increment version in package.json"
                     return 1
                 fi
             fi
-
+            
             # what version did we pick?
             local pkg_version
             pkg_version=$(jq --raw-output .version package.json)
@@ -108,15 +109,15 @@ function main () {
                 err "failed to parse version from package.json"
                 return 1
             fi
-
+            
             if ! bash scripts/npm-publish.bash --access restricted; then
                 err "fail at npm publishing"
                 return 1
             fi
-
+            
             msg "Published to npm as ${branch_module_name} version ${pkg_version}"
             git_tag="${branch_module_name}-${pkg_version}"
-
+            
             if ! git checkout -- package.json; then
                 msg "WARNING: I changed package.json and couldn't check out the original"
             fi
@@ -124,7 +125,7 @@ function main () {
             msg "No NPM_TOKEN, couldn't publish"
         fi
     fi
-
+    
     if [[ $TRAVIS_PULL_REQUEST == false ]] ; then
         if [[ $TRAVIS_BRANCH == master || $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-(m|rc)\.[0-9]+)?$ ]]; then
             local project_version
@@ -148,8 +149,8 @@ function main () {
             git_tag=$project_version+travis$TRAVIS_BUILD_NUMBER
         fi
     fi
-
-
+    
+    
     if [[ $git_tag ]] ; then
         if ! git config --global user.email "travis-ci@atomist.com"; then
             err "failed to set git user email"
