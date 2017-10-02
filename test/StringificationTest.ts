@@ -7,7 +7,7 @@ describe("stringification and matchedStructure", () => {
 
     it("can JSON stringify microgrammar result", () => {
         const content = "<foo>";
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             $id: "elt",
             lx: "<",
             name: /[a-zA-Z0-9]+/,
@@ -25,7 +25,7 @@ describe("stringification and matchedStructure", () => {
 
     it("can JSON stringify gloriously nested microgrammar result", () => {
         const content = "<foo>";
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             _lx: "<",
             name: {
                 name: /[a-zA-Z0-9]+/,
@@ -44,7 +44,7 @@ describe("stringification and matchedStructure", () => {
     it("can extract clean data", () => {
         const content = "<foo>";
 
-        const mg = Microgrammar.fromDefinitions<Nested>({
+        const mg = Microgrammar.fromDefinitely<Nested>({
             _lx: "<",
             person: {
                 name: /[a-zA-Z0-9]+/,
@@ -54,12 +54,12 @@ describe("stringification and matchedStructure", () => {
         const result = mg.findMatches(content);
         const cleanNested: Nested = result[0].matchedStructure<Nested>();
         assert(cleanNested.person.name === "foo");
-        assert.deepEqual(cleanNested, { person: { name: "foo" }});
+        assert.deepEqual(cleanNested, { person: { name: "foo" } });
     });
 
 });
 
 interface Nested {
 
-    person: {name: string};
+    person: { name: string };
 }

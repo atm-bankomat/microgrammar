@@ -169,7 +169,7 @@ describe("Rep", () => {
     });
 
     it("should not infinite loop on rep of opt", () => {
-        const mgDependency = Microgrammar.fromDefinitions({
+        const mgDependency = Microgrammar.fromDefinitely({
             _dependencyTag: "<dependency>",
             gav: new Rep(
                 new Opt({
@@ -189,7 +189,7 @@ describe("Rep", () => {
     });
 
     it("should not infinite loop on rep of alt with opt", () => {
-        const mgDependency = Microgrammar.fromDefinitions({
+        const mgDependency = Microgrammar.fromDefinitely({
             _dependencyTag: "<dependency>",
             gav: new Rep(new Alt(
                 {

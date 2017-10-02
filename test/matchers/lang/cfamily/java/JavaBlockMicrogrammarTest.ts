@@ -22,7 +22,7 @@ describe("JavaBlock microgrammars", () => {
 
 export const JAVA_IDENTIFIER = /[A-Za-z][a-zA-Z0-9]+/;
 
-const METHOD_GRAMMAR = Microgrammar.fromDefinitions<ChangeControledMethod>({
+const METHOD_GRAMMAR = Microgrammar.fromDefinitely<ChangeControledMethod>({
     _visibilityModifier: "public",
     type: JAVA_IDENTIFIER,
     name: JAVA_IDENTIFIER,

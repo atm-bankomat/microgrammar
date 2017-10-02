@@ -36,7 +36,7 @@ describe("Break Benchmark", () => {
     })).timeout(55000);
 
     function parseGrammar(a: {}, commentCount = comments) {
-        const g = Microgrammar.fromDefinitions<any>(a);
+        const g = Microgrammar.fromDefinitely<any>(a);
         let additional = "";
         for (let m = 0; m < validTargetMethods; m++) {
             additional += validMethod(m);

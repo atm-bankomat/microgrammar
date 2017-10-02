@@ -42,12 +42,12 @@ describe("InputStateListener", () => {
                 return new MatchFailureReport("id", is.offset, {}, "wrong");
             }
         }
-        const m = Microgrammar.fromDefinitions({
+        const m = Microgrammar.fromDefinitely({
             curly: new MatchCurlyButNotAfter$(),
         });
         const input = "this is a { without $ and this is one after ${ and this is ${ and { too";
 
-        const matches = m.findMatches(input, {}, { l: new Listener()});
+        const matches = m.findMatches(input, {}, { l: new Listener() });
         assert(matches.length === 2);
     });
 
@@ -63,7 +63,7 @@ describe("InputStateListener", () => {
             }
         }
 
-        const m = Microgrammar.fromDefinitions({
+        const m = Microgrammar.fromDefinitely({
             at: new AtNotInString(),
         });
         const input = `
@@ -82,10 +82,10 @@ public class Foo {
     });
 
     it("tracks nesting depth 4 statement", () => {
-        const m = Microgrammar.fromDefinitions<any>({
+        const m = Microgrammar.fromDefinitely<any>({
             toFlag: when(JavaBlock, _ => true, is => (is.listeners.depthCount as NestingDepthStateMachine).depth >= 4),
         });
-        const matches = m.findMatches(DeeplyNested, {}, {depthCount: new NestingDepthStateMachine() });
+        const matches = m.findMatches(DeeplyNested, {}, { depthCount: new NestingDepthStateMachine() });
         assert(matches.length === 1);
         assert(matches[0].toFlag.block, JSON.stringify(matches[0]));
         assert(new CFamilyLangHelper().canonicalize(matches[0].toFlag.block) === 'println("too deeply nested");');

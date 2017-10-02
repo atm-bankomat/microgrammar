@@ -62,17 +62,17 @@ export class Microgrammar<T> implements Term {
      * @return {Updatable<T>}
      */
     public static updatable<T>(matches: Array<T & PatternMatch>,
-                               content: string): Updatable<T> {
+        content: string): Updatable<T> {
         return new Updatable<T>(matches, content);
     }
 
-    public static fromDefinitions<T>(definitions: {}): Microgrammar<T> {
+    public static fromDefinitely<T>(definitions: {}): Microgrammar<T> {
         return new Microgrammar<T>(Concat.of(definitions));
     }
 
     public static fromString<T>(spec: string,
-                                components: object = {},
-                                options: FromStringOptions = {}): Microgrammar<T> {
+        components: object = {},
+        options: FromStringOptions = {}): Microgrammar<T> {
         return new Microgrammar<T>(
             new MicrogrammarSpecParser().fromString(spec, components, options));
     }
@@ -94,9 +94,9 @@ export class Microgrammar<T> implements Term {
      * @return {PatternMatch[]}
      */
     public findMatches(input: string | InputStream,
-                       parseContext?: {},
-                       l?: Listeners,
-                       stopAfterMatch: (PatternMatch) => boolean = pm => false): Array<T & PatternMatch> {
+        parseContext?: {},
+        l?: Listeners,
+        stopAfterMatch: (PatternMatch) => boolean = pm => false): Array<T & PatternMatch> {
         const lm = new LazyMatcher(this.matcher, stopAfterMatch);
         lm.consume(input, parseContext, l);
         return lm.matches as Array<T & PatternMatch>;
@@ -163,7 +163,7 @@ export abstract class MatchingMachine {
      * @param l listeners observing input characters as they are read
      */
     public consume(input: string | InputStream, parseContext = {}, l?: Listeners): void {
-        const omg = this.observer ? Microgrammar.fromDefinitions(this.observer) : undefined;
+        const omg = this.observer ? Microgrammar.fromDefinitely(this.observer) : undefined;
 
         let currentMatcher: MatchingLogic = this.matcher;
         const stream = toInputStream(input);
