@@ -117,7 +117,7 @@ function main () {
             msg "Published to npm as ${branch_module_name} version ${pkg_version}"
             git_tag="${branch_module_name}-${pkg_version}"
 
-            if ! git checkout -- package.json; then
+            if ! git checkout -qf FETCH_HEAD ; then
                 msg "WARNING: I changed package.json and couldn't check out the original"
             fi
         else
@@ -159,7 +159,7 @@ function main () {
             err "failed to set git user name"
             return 1
         fi
-        if ! git tag "$git_tag" -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"; then
+        if ! git tag "$git_tag" $TRAVIS_PULL_REQUEST_SHA -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"; then
             err "failed to create git tag: $git_tag"
             return 1
         fi
