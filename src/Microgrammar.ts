@@ -62,7 +62,7 @@ export class Microgrammar<T> implements Term {
      * @return {Updatable<T>}
      */
     public static updatable<T>(matches: Array<T & PatternMatch>,
-        content: string): Updatable<T> {
+                               content: string): Updatable<T> {
         return new Updatable<T>(matches, content);
     }
 
@@ -71,8 +71,8 @@ export class Microgrammar<T> implements Term {
     }
 
     public static fromString<T>(spec: string,
-        components: object = {},
-        options: FromStringOptions = {}): Microgrammar<T> {
+                                components: object = {},
+                                options: FromStringOptions = {}): Microgrammar<T> {
         return new Microgrammar<T>(
             new MicrogrammarSpecParser().fromString(spec, components, options));
     }
@@ -94,9 +94,9 @@ export class Microgrammar<T> implements Term {
      * @return {PatternMatch[]}
      */
     public findMatches(input: string | InputStream,
-        parseContext?: {},
-        l?: Listeners,
-        stopAfterMatch: (PatternMatch) => boolean = pm => false): Array<T & PatternMatch> {
+                       parseContext?: {},
+                       l?: Listeners,
+                       stopAfterMatch: (PatternMatch) => boolean = pm => false): Array<T & PatternMatch> {
         const lm = new LazyMatcher(this.matcher, stopAfterMatch);
         lm.consume(input, parseContext, l);
         return lm.matches as Array<T & PatternMatch>;
