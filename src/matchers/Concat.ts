@@ -1,7 +1,7 @@
 import { InputState } from "../InputState";
 import { LazyMatchingLogic, Matcher, MatchingLogic, Term } from "../Matchers";
 import { isSuccessfulMatch, MatchFailureReport, MatchPrefixResult, matchPrefixSuccess } from "../MatchPrefixResult";
-import { Microgrammar } from "../Microgrammar";
+import { Microgrammark } from "../Microgrammar";
 import { isSpecialMember, PatternMatch, TreePatternMatch } from "../PatternMatch";
 import { Literal, Regex } from "../Primitives";
 
@@ -15,7 +15,7 @@ import { readyToMatch } from "../internal/Whitespace";
 export type TermDef = Term | string | RegExp;
 
 export interface MatchVeto { $id: string; veto: ((ctx: {}, thisMatchContext: {}, parseContext: {}) => boolean); }
-export interface ContextComputation { $id: string; compute: ((ctx: {}) => any ); }
+export interface ContextComputation { $id: string; compute: ((ctx: {}) => any); }
 
 function isMatchVeto(thing: MatchStep): thing is MatchVeto {
     return isSpecialMember(thing.$id);
@@ -66,7 +66,7 @@ export class Concat implements LazyMatchingLogic, WhiteSpaceHandler, SkipCapable
     // for required prefix etc.
     private firstMatcher: Matcher;
 
-    private constructor(public definitions: any) {}
+    private constructor(public definitions: any) { }
 
     /**
      * Evaluate all members to ready this Concat for use.
@@ -91,9 +91,9 @@ export class Concat implements LazyMatchingLogic, WhiteSpaceHandler, SkipCapable
                         throw new Error(`No arg function [${stepName}] is invalid as a matching step`);
                     }
                     if (isSpecialMember(stepName)) {
-                        this.matchSteps.push({$id: stepName, veto: def});
+                        this.matchSteps.push({ $id: stepName, veto: def });
                     } else {
-                        this.matchSteps.push({$id: stepName, compute: def});
+                        this.matchSteps.push({ $id: stepName, compute: def });
                     }
                 } else {
                     // It's a normal matcher
@@ -157,7 +157,7 @@ export class Concat implements LazyMatchingLogic, WhiteSpaceHandler, SkipCapable
                 if (isMatchVeto(step)) {
                     if (step.veto(bindingTarget, thisMatchContext, parseContext) === false) {
                         return new MatchFailureReport(this.$id, initialInputState.offset, bindingTarget,
-                          `Match vetoed by ${step.$id}`);
+                            `Match vetoed by ${step.$id}`);
                     }
                 } else {
                     bindingTarget[step.$id] = step.compute(bindingTarget);
@@ -195,8 +195,8 @@ export function toMatchingLogic(o: TermDef): MatchingLogic {
         return new Regex(o as RegExp);
     } else if ((o as MatchingLogic).matchPrefix) {
         return o as MatchingLogic;
-    } else if ((o as Microgrammar<any>).findMatches) {
-        return (o as Microgrammar<any>).matcher;
+    } else if ((o as Microgrammark<any>).findMatches) {
+        return (o as Microgrammark<any>).matcher;
     } else {
         return Concat.of(o);
     }

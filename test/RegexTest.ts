@@ -1,7 +1,7 @@
 import { inputStateFromString } from "../src/internal/InputStateFactory";
 import { isSuccessfulMatch } from "../src/MatchPrefixResult";
 
-import { Microgrammar } from "../src/Microgrammar";
+import { Microgrammark } from "../src/Microgrammar";
 import { PatternMatch } from "../src/PatternMatch";
 import { Regex } from "../src/Primitives";
 
@@ -78,7 +78,7 @@ describe("Regex", () => {
     it("matches regex length 5000", () => matchRegexOfLength(5000));
 
     function matchRegexOfLength(n: number) {
-        const mg = Microgrammar.fromDefinitions<{ r: string, other: string }>({
+        const mg = Microgrammark.fromDefinitions<{ r: string, other: string }>({
             r: /[a-z]+/,
             other: ".",
         });

@@ -1,5 +1,5 @@
 import { Concat } from "../src/matchers/Concat";
-import { Microgrammar } from "../src/Microgrammar";
+import { Microgrammark } from "../src/Microgrammar";
 import { Opt, when } from "../src/Ops";
 import { Rep, Rep1 } from "../src/Rep";
 
@@ -17,7 +17,7 @@ const VERSION = {
     rx2: "</version>",
 };
 
-export const DEPENDENCY_GRAMMAR = Microgrammar.fromDefinitions<VersionedArtifact>({
+export const DEPENDENCY_GRAMMAR = Microgrammark.fromDefinitions<VersionedArtifact>({
     _lx1: "<dependency>",
     lx1: "<groupId>",
     group: LEGAL_VALUE,
@@ -30,10 +30,10 @@ export const DEPENDENCY_GRAMMAR = Microgrammar.fromDefinitions<VersionedArtifact
 
 /**
  * Take all dependencies, including unversioned ones
- * @type {Microgrammar}
+ * @type {Microgrammark}
  */
 export const ALL_DEPENDENCY_GRAMMAR =
-    Microgrammar.fromDefinitions<VersionedArtifact>({
+    Microgrammark.fromDefinitions<VersionedArtifact>({
         _lx1: "<dependency>",
         lx1: "<groupId>",
         group: LEGAL_VALUE,
@@ -45,7 +45,7 @@ export const ALL_DEPENDENCY_GRAMMAR =
         version: ctx => ctx._version ? ctx._version.version : undefined,
     });
 
-export const PLUGIN_GRAMMAR = Microgrammar.fromDefinitions<VersionedArtifact>({
+export const PLUGIN_GRAMMAR = Microgrammark.fromDefinitions<VersionedArtifact>({
     _lx1: "<plugin>",
     lx1: "<groupId>",
     group: LEGAL_VALUE,
@@ -58,10 +58,10 @@ export const PLUGIN_GRAMMAR = Microgrammar.fromDefinitions<VersionedArtifact>({
 
 /**
  * Take all plugins, including unversioned ones
- * @type {Microgrammar}
+ * @type {Microgrammark}
  */
 export const ALL_PLUGIN_GRAMMAR =
-    Microgrammar.fromDefinitions<VersionedArtifact>({
+    Microgrammark.fromDefinitions<VersionedArtifact>({
         _lx1: "<plugin>",
         lx1: "<groupId>",
         group: LEGAL_VALUE,
@@ -83,7 +83,7 @@ const property = {
     _done: ">",
 };
 
-export const PROPERTIES_GRAMMAR = Microgrammar.fromDefinitions<PropertiesBlock>({
+export const PROPERTIES_GRAMMAR = Microgrammark.fromDefinitions<PropertiesBlock>({
     _po: "<properties>",
     properties: new Rep(property),
     // _pe: "</properties>"
@@ -115,7 +115,7 @@ export interface XmlTag {
 export const GAV_CONCAT = when(Concat.of({
     tags: new Rep1(XML_TAG_WITH_SIMPLE_VALUE),
 }), pm => pm.tags.filter(t => t.name === "groupId").length > 0 &&
-pm.tags.filter(t => t.name === "artifactId").length > 0);
+    pm.tags.filter(t => t.name === "artifactId").length > 0);
 
 export class GAV {
 
@@ -124,7 +124,7 @@ export class GAV {
 
 }
 
-export const ARTIFACT_VERSION_GRAMMAR = Microgrammar.fromDefinitions({
+export const ARTIFACT_VERSION_GRAMMAR = Microgrammark.fromDefinitions({
     // _lx1: "<dependency>",
     lx2: "<version>",
     version: LEGAL_VALUE,

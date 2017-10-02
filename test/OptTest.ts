@@ -1,6 +1,6 @@
 import { inputStateFromString } from "../src/internal/InputStateFactory";
 import { isSuccessfulMatch } from "../src/MatchPrefixResult";
-import { Microgrammar } from "../src/Microgrammar";
+import { Microgrammark } from "../src/Microgrammar";
 import { Opt, optional } from "../src/Ops";
 import { PatternMatch } from "../src/PatternMatch";
 import { Literal } from "../src/Primitives";
@@ -55,13 +55,13 @@ describe("Opt", () => {
 
     it("not pull up single property", () => {
         const content = "x";
-        const nested = Microgrammar.fromDefinitions({
-                x: new Literal("x"),
-            },
+        const nested = Microgrammark.fromDefinitions({
+            x: new Literal("x"),
+        },
         );
-        const mg = Microgrammar.fromDefinitions({
-                x: optional(nested),
-            },
+        const mg = Microgrammark.fromDefinitions({
+            x: optional(nested),
+        },
         );
 
         const result = mg.firstMatch(content) as any;
@@ -70,11 +70,11 @@ describe("Opt", () => {
 
     it("pull up single property", () => {
         const content = "x";
-        const nested = Microgrammar.fromDefinitions({
-                x: new Literal("x"),
-            },
+        const nested = Microgrammark.fromDefinitions({
+            x: new Literal("x"),
+        },
         );
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammark.fromDefinitions({
             _x: optional(nested),
             x: ctx => !!ctx._x ? ctx._x.x : undefined,
         });

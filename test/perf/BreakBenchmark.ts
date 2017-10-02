@@ -1,6 +1,6 @@
 import * as assert from "power-assert";
 import { skipTo, takeUntil } from "../../src/matchers/skip/Skip";
-import { Microgrammar } from "../../src/Microgrammar";
+import { Microgrammark } from "../../src/Microgrammar";
 import { comment, invalidMethod, Java1, randomMethod, validMethod } from "./JavaAnnotationsBenchmark";
 
 describe("Break Benchmark", () => {
@@ -36,7 +36,7 @@ describe("Break Benchmark", () => {
     })).timeout(55000);
 
     function parseGrammar(a: {}, commentCount = comments) {
-        const g = Microgrammar.fromDefinitions<any>(a);
+        const g = Microgrammark.fromDefinitions<any>(a);
         let additional = "";
         for (let m = 0; m < validTargetMethods; m++) {
             additional += validMethod(m);

@@ -1,4 +1,4 @@
-import { Microgrammar } from "../../src/Microgrammar";
+import { Microgrammark } from "../../src/Microgrammar";
 
 import * as assert from "power-assert";
 import { Integer } from "../../src/Primitives";
@@ -7,7 +7,7 @@ describe("FromStringOptions", () => {
 
     it("skip over one string of discardable content", () => {
         const content = "foo (and some junk) 63";
-        const mg = Microgrammar.fromString<{ num: number}>("foo...${num}", {
+        const mg = Microgrammark.fromString<{ num: number }>("foo...${num}", {
             num: Integer,
         });
         const result = mg.findMatches(content);
@@ -19,7 +19,7 @@ describe("FromStringOptions", () => {
 
     it("skip over two strings of discardable content", () => {
         const content = "foo (and some junk) 63 and then XXX";
-        const mg = Microgrammar.fromString<{ num: number}>("foo...${num}...XXX", {
+        const mg = Microgrammark.fromString<{ num: number }>("foo...${num}...XXX", {
             num: Integer,
         });
         const result = mg.findMatches(content);
@@ -30,9 +30,9 @@ describe("FromStringOptions", () => {
 
     it("allows custom ellipsis", () => {
         const content = "foo (and some junk) 63";
-        const mg = Microgrammar.fromString<{ num: number}>("foo⤞${num}", {
+        const mg = Microgrammark.fromString<{ num: number }>("foo⤞${num}", {
             num: Integer,
-        }, { ellipsis: "⤞"});
+        }, { ellipsis: "⤞" });
         const result = mg.findMatches(content);
         assert(result.length === 1);
         assert(result[0].$matched === content);
@@ -41,7 +41,7 @@ describe("FromStringOptions", () => {
 
     it("allows custom component prefix", () => {
         const content = "foo (and some junk) 63 and then XXX";
-        const mg = Microgrammar.fromString<{ num: number}>("foo...#{num}...XXX", {
+        const mg = Microgrammark.fromString<{ num: number }>("foo...#{num}...XXX", {
             num: Integer,
         }, { componentPrefix: "#" });
         const result = mg.findMatches(content);

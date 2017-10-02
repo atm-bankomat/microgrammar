@@ -4,7 +4,7 @@ import { PatternMatch } from "../src/PatternMatch";
 import { atLeastOne, Rep, Rep1, Rep1Sep, RepSep, zeroOrMore } from "../src/Rep";
 import { LEGAL_VALUE } from "./MavenGrammars";
 
-import { Microgrammar } from "../src/Microgrammar";
+import { Microgrammark } from "../src/Microgrammar";
 import { Alt, Opt } from "../src/Ops";
 import { RealWorldPom } from "./Fixtures";
 
@@ -169,7 +169,7 @@ describe("Rep", () => {
     });
 
     it("should not infinite loop on rep of opt", () => {
-        const mgDependency = Microgrammar.fromDefinitions({
+        const mgDependency = Microgrammark.fromDefinitions({
             _dependencyTag: "<dependency>",
             gav: new Rep(
                 new Opt({
@@ -189,7 +189,7 @@ describe("Rep", () => {
     });
 
     it("should not infinite loop on rep of alt with opt", () => {
-        const mgDependency = Microgrammar.fromDefinitions({
+        const mgDependency = Microgrammark.fromDefinitions({
             _dependencyTag: "<dependency>",
             gav: new Rep(new Alt(
                 {

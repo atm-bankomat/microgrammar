@@ -43,7 +43,7 @@ export class Updatable<T> {
  * Modifications are tracked and we can get an updated string
  * afterwards.
  */
-export class Microgrammar<T> implements Term {
+export class Microgrammark<T> implements Term {
 
     /**
      * Make this match transparently updatable using property mutation
@@ -66,14 +66,14 @@ export class Microgrammar<T> implements Term {
         return new Updatable<T>(matches, content);
     }
 
-    public static fromDefinitions<T>(definitions: {}): Microgrammar<T> {
-        return new Microgrammar<T>(Concat.of(definitions));
+    public static fromDefinitions<T>(definitions: {}): Microgrammark<T> {
+        return new Microgrammark<T>(Concat.of(definitions));
     }
 
     public static fromString<T>(spec: string,
                                 components: object = {},
-                                options: FromStringOptions = {}): Microgrammar<T> {
-        return new Microgrammar<T>(
+                                options: FromStringOptions = {}): Microgrammark<T> {
+        return new Microgrammark<T>(
             new MicrogrammarSpecParser().fromString(spec, components, options));
     }
 
@@ -163,7 +163,7 @@ export abstract class MatchingMachine {
      * @param l listeners observing input characters as they are read
      */
     public consume(input: string | InputStream, parseContext = {}, l?: Listeners): void {
-        const omg = this.observer ? Microgrammar.fromDefinitions(this.observer) : undefined;
+        const omg = this.observer ? Microgrammark.fromDefinitions(this.observer) : undefined;
 
         let currentMatcher: MatchingLogic = this.matcher;
         const stream = toInputStream(input);
