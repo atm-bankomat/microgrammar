@@ -78,7 +78,7 @@ describe("Regex", () => {
     it("matches regex length 5000", () => matchRegexOfLength(5000));
 
     function matchRegexOfLength(n: number) {
-        const mg = Microgrammar.fromDefinitions<{ r: string, other: string }>({
+        const mg = Microgrammar.fromDefinitely<{ r: string, other: string }>({
             r: /[a-z]+/,
             other: ".",
         });

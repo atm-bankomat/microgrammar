@@ -12,9 +12,9 @@ describe("StringGrammarTest", () => {
 
     it("broken in concat", () => {
         const strings =
-            Microgrammar.fromDefinitions<any>(
-                {theString: new Alt(StringGrammar.stringGrammar, "la")}).
-            findMatches('"    winter is coming " la la la');
+            Microgrammar.fromDefinitely<any>(
+                { theString: new Alt(StringGrammar.stringGrammar, "la") }).
+                findMatches('"    winter is coming " la la la');
         const match = strings[0];
         assert(isPatternMatch(match));
         assert(match.$matched === '"    winter is coming "');
@@ -23,7 +23,7 @@ describe("StringGrammarTest", () => {
 
     it("not broken without concat", () => {
         const result = new Alt(StringGrammar.stringGrammar, "la").
-        matchPrefix(inputStateFromString('"    winter is coming " la la la'), {}, {});
+            matchPrefix(inputStateFromString('"    winter is coming " la la la'), {}, {});
         if (isSuccessfulMatch(result)) {
             const match = result.match;
             if (isPatternMatch(match)) {
@@ -44,7 +44,7 @@ class StringGrammar {
         .consumeWhiteSpace(false);
 
     public static readonly stringGrammar: Microgrammar<any> =
-        Microgrammar.fromDefinitions<any>({
+    Microgrammar.fromDefinitely<any>({
         _p1: '"',
         charArray: StringGrammar.stringTextPattern,
         _p2: '"',

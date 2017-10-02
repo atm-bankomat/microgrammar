@@ -12,7 +12,7 @@ describe("Microgrammar.exactMatch", () => {
 
     it("parse all content: File matches", () => {
         const content = "public void thing(int i);";
-        const mg = Microgrammar.fromDefinitions<{ name: string }>({
+        const mg = Microgrammar.fromDefinitely<{ name: string }>({
             _p: "public",
             type: JAVA_IDENTIFIER,
             name: JAVA_IDENTIFIER,
@@ -31,7 +31,7 @@ describe("Microgrammar.exactMatch", () => {
 
     it("parse all content: pattern match recognized in output", () => {
         const content = "public void";
-        const mg = Microgrammar.fromDefinitions<any>({
+        const mg = Microgrammar.fromDefinitely<any>({
             _p: "public",
             type: JAVA_IDENTIFIER,
         });
@@ -41,7 +41,7 @@ describe("Microgrammar.exactMatch", () => {
 
     it("parse all content: dismatch report recognized in output", () => {
         const content = "not-matchy void";
-        const mg = Microgrammar.fromDefinitions<{ type: string }>({
+        const mg = Microgrammar.fromDefinitely<{ type: string }>({
             _p: "public",
             type: JAVA_IDENTIFIER,
         });
@@ -54,7 +54,7 @@ describe("Microgrammar.exactMatch", () => {
 
     it("parse all content: Fail due to irrelevant content after match", () => {
         const content = "public void thing(int i); // and this is irrelevant crap";
-        const mg = Microgrammar.fromDefinitions<any>({
+        const mg = Microgrammar.fromDefinitely<any>({
             _p: "public",
             type: JAVA_IDENTIFIER,
             name: JAVA_IDENTIFIER,
@@ -67,7 +67,7 @@ describe("Microgrammar.exactMatch", () => {
 
     it("parse all content: Fail due to irrelevant content before match", () => {
         const content = "// and this is irrelevant crap\npublic void thing(int i);";
-        const mg = Microgrammar.fromDefinitions<any>({
+        const mg = Microgrammar.fromDefinitely<any>({
             _p: "public",
             type: JAVA_IDENTIFIER,
             name: JAVA_IDENTIFIER,

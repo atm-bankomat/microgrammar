@@ -55,13 +55,13 @@ describe("Opt", () => {
 
     it("not pull up single property", () => {
         const content = "x";
-        const nested = Microgrammar.fromDefinitions({
-                x: new Literal("x"),
-            },
+        const nested = Microgrammar.fromDefinitely({
+            x: new Literal("x"),
+        },
         );
-        const mg = Microgrammar.fromDefinitions({
-                x: optional(nested),
-            },
+        const mg = Microgrammar.fromDefinitely({
+            x: optional(nested),
+        },
         );
 
         const result = mg.firstMatch(content) as any;
@@ -70,11 +70,11 @@ describe("Opt", () => {
 
     it("pull up single property", () => {
         const content = "x";
-        const nested = Microgrammar.fromDefinitions({
-                x: new Literal("x"),
-            },
+        const nested = Microgrammar.fromDefinitely({
+            x: new Literal("x"),
+        },
         );
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             _x: optional(nested),
             x: ctx => !!ctx._x ? ctx._x.x : undefined,
         });

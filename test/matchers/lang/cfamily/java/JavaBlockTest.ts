@@ -62,7 +62,7 @@ describe("JavaBlock", () => {
     it("should match inner structure", () => {
         const balanced = "{ x = y; }";
         const is = inputStateFromString(balanced);
-        const inner = Microgrammar.fromDefinitions({
+        const inner = Microgrammar.fromDefinitely({
             left: new Regex(/[a-z]+/),
             equals: "=",
             right: "y",

@@ -25,7 +25,7 @@ describe("Left recursion", () => {
     };
     tobeExpression = expression;
     ((expression.expr as Alt).matchers[0] as any)._init();
-    const mg = Microgrammar.fromDefinitions(expression);
+    const mg = Microgrammar.fromDefinitely(expression);
 
     it.skip("should match simple term", () => {
         const input = "2";

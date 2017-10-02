@@ -30,7 +30,7 @@ describe("Circularity", () => {
     genericType2._init();
 
     // Keep the type simple as we don't need full definition
-    const typeGrammar = Microgrammar.fromDefinitions<{ type: { name: string, param: any } }>({
+    const typeGrammar = Microgrammar.fromDefinitely<{ type: { name: string, param: any } }>({
         type,
     });
 

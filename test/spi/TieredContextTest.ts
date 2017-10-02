@@ -8,7 +8,7 @@ import * as assert from "power-assert";
 describe("Per file context", () => {
 
     it("should be available within concat object", () => {
-        const mg = Microgrammar.fromDefinitions<{ name: string, zip: string }>({
+        const mg = Microgrammar.fromDefinitely<{ name: string, zip: string }>({
             name: /[A-Z][a-z]+/,
             zip: skipTo(/[0-9]{5}/),
             // Suppress duplicate if we're already seen this zip
@@ -30,7 +30,7 @@ describe("Per file context", () => {
     });
 
     it("should take only even matches", () => {
-        const mg = Microgrammar.fromDefinitions<{ name: string, zip: string }>({
+        const mg = Microgrammar.fromDefinitely<{ name: string, zip: string }>({
             name: /[A-Z][a-z]+/,
             zip: skipTo(/[0-9]{5}/),
             _keep: (ctx, _, parseContext) => ++parseContext.count % 2 === 0,
@@ -49,7 +49,7 @@ describe("Per file context", () => {
 describe("Per match context", () => {
 
     it("should be available within nested object and communicate back", () => {
-        const mg = Microgrammar.fromDefinitions<{ name: string, zip: string }>({
+        const mg = Microgrammar.fromDefinitely<{ name: string, zip: string }>({
             name: /[A-Z][a-z]+/,
             _addToMatchContext: (_, matchContext) => matchContext.something = "magic",
             address: {

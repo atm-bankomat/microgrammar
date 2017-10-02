@@ -9,7 +9,7 @@ import { isSuccessfulMatch } from "../../../src/MatchPrefixResult";
 
 describe("Skip", () => {
 
-    const desirable = Microgrammar.fromDefinitions({
+    const desirable = Microgrammar.fromDefinitely({
         beast: new Alt("dog", "cat", "pig"),
         activity: yadaYadaThenThisButNotThat("spa", "shoplifting"),
         last: yadaYadaThen("happiness"),

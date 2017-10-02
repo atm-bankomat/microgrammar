@@ -1,12 +1,12 @@
-import {ChangeSet} from "../../src/internal/ChangeSet";
-import {isSuccessfulMatch} from "../../src/MatchPrefixResult";
-import {Microgrammar} from "../../src/Microgrammar";
-import {Opt} from "../../src/Ops";
+import { ChangeSet } from "../../src/internal/ChangeSet";
+import { isSuccessfulMatch } from "../../src/MatchPrefixResult";
+import { Microgrammar } from "../../src/Microgrammar";
+import { Opt } from "../../src/Ops";
 
 import * as assert from "power-assert";
 
-import {Integer} from "../../src/Primitives";
-import {RepSep} from "../../src/Rep";
+import { Integer } from "../../src/Primitives";
+import { RepSep } from "../../src/Rep";
 
 describe("MicrogrammarUpdateTest", () => {
 
@@ -16,7 +16,7 @@ describe("MicrogrammarUpdateTest", () => {
             name: /[a-zA-Z0-9]+/,
             rx: ">",
         };
-        return Microgrammar.fromDefinitions({
+        return Microgrammar.fromDefinitely({
             first: element,
             second: new Opt(element),
         });
@@ -35,7 +35,7 @@ describe("MicrogrammarUpdateTest", () => {
     });
 
     it("update nested element", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammar.fromDefinitely({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,
@@ -57,7 +57,7 @@ describe("MicrogrammarUpdateTest", () => {
     });
 
     it("update deeply nested element", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammar.fromDefinitely({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,
@@ -87,7 +87,7 @@ describe("MicrogrammarUpdateTest", () => {
     });
 
     it("update multiple deeply nested elements in succession", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammar.fromDefinitely({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,
@@ -116,7 +116,7 @@ describe("MicrogrammarUpdateTest", () => {
     });
 
     it("can update a whole section", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammar.fromDefinitely({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,
@@ -141,7 +141,7 @@ describe("MicrogrammarUpdateTest", () => {
     });
 
     it("updating a whole section blocks modifying structure within it", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammar.fromDefinitely({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,

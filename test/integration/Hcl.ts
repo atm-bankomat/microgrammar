@@ -55,7 +55,7 @@ describe("Parsing HCL", () => {
             value: new Alt(new Alt(LowercaseBoolean, hclString()), hclNumber),
         });
 
-        const mg2 = Microgrammar.fromDefinitions({
+        const mg2 = Microgrammar.fromDefinitely({
             key: /[a-z_]+/,
             _equals: "=",
             value: hclNumber,

@@ -20,7 +20,7 @@ describe("Microgrammar", () => {
 
     it("literal", () => {
         const content = "foo ";
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             name: "foo",
         });
         const result = mg.findMatches(content);
@@ -30,14 +30,14 @@ describe("Microgrammar", () => {
     });
 
     function makeMg() {
-        return Microgrammar.fromDefinitions({
+        return Microgrammar.fromDefinitely({
             name: "foo",
         });
     }
 
     it("allows valid call to function", () => {
         const content = "foo ";
-        const validMg = Microgrammar.fromDefinitions({
+        const validMg = Microgrammar.fromDefinitely({
             content: makeMg(),
         });
         const result = validMg.findMatches(content);
@@ -50,7 +50,7 @@ describe("Microgrammar", () => {
         const content = "foo ";
         // This is invalid as we are not invoking the function
         try {
-            Microgrammar.fromDefinitions({
+            Microgrammar.fromDefinitely({
                 content: makeMg,
             });
             fail("Should not permit invalid function step");
@@ -61,7 +61,7 @@ describe("Microgrammar", () => {
 
     it("XML element", () => {
         const content = "<foo>";
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             lx: "<",
             name: /[a-zA-Z0-9]+/,
             rx: ">",
@@ -75,7 +75,7 @@ describe("Microgrammar", () => {
     });
 
     function testTwoXmlElements(content: string, first: string, second: string) {
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             _lx: "<",
             name: /[a-zA-Z0-9]+/,
             _rx: ">",
@@ -126,7 +126,7 @@ describe("Microgrammar", () => {
             namex: /[a-zA-Z0-9]+/,
             _rx: ">",
         };
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             $id: "elt",
             first: element,
             second: element,
@@ -141,7 +141,7 @@ describe("Microgrammar", () => {
 
     it("2 elements: whitespace insensitive", () => {
         const content = "<first> notxml";
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             _lx: "<",
             namex: /[a-zA-Z0-9]+/,
             _rx: ">",
@@ -153,7 +153,7 @@ describe("Microgrammar", () => {
 
     it("2 elements: whitespace sensitive", () => {
         const content = "<first> notxml";
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             ...WhiteSpaceSensitive,
             _lx: "<",
             namex: /[a-zA-Z0-9]+/,
@@ -168,7 +168,7 @@ describe("Microgrammar", () => {
         interface Named {
             name: string;
         }
-        const mg = Microgrammar.fromDefinitions<Named>({
+        const mg = Microgrammar.fromDefinitely<Named>({
             name: /[A-Z][a-z]+/,
         });
         const result = mg.findMatches("Emmanuel Marine");
@@ -187,7 +187,7 @@ describe("Microgrammar", () => {
         interface Named {
             name: string;
         }
-        const mg = Microgrammar.fromDefinitions<Named>({
+        const mg = Microgrammar.fromDefinitely<Named>({
             name: /[A-Z][a-z]+/,
         });
         const result = mg.findMatches("Emmanuel Marine");
@@ -223,7 +223,7 @@ describe("Microgrammar", () => {
             name: /[a-zA-Z0-9]+/,
             rx: ">",
         };
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             first: element,
             second: new Opt(element),
         });
@@ -259,7 +259,7 @@ describe("Microgrammar", () => {
             name: /[a-zA-Z0-9]+/,
             rx: ">",
         };
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             first: element,
             second: new Opt(element),
         });
@@ -281,7 +281,7 @@ describe("Microgrammar", () => {
             name: /[a-zA-Z0-9]+/,
             rx: ">",
         };
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             first: element,
             second: element,
             $id: "element",
@@ -341,7 +341,7 @@ describe("Microgrammar", () => {
 
     function namesGrammar() {
         const names = new RepSep(/[a-zA-Z0-9]+/, ",");
-        return Microgrammar.fromDefinitions({
+        return Microgrammar.fromDefinitely({
             dogs: names,
             _separator: "****",
             cats: names,
@@ -370,11 +370,11 @@ describe("Microgrammar", () => {
 
     it("microgrammars can compose: no match", () => {
         const names = new Rep1Sep(/[a-zA-Z0-9]+/, ",");
-        const nested = Microgrammar.fromDefinitions({
+        const nested = Microgrammar.fromDefinitely({
             pigs: names,
         });
 
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             dogs: names,
             _separator: "****",
             cats: names,
@@ -387,11 +387,11 @@ describe("Microgrammar", () => {
 
     it("microgrammars can compose: match", () => {
         const names = new Rep1Sep(/[a-zA-Z0-9]+/, ",");
-        const nested = Microgrammar.fromDefinitions({
+        const nested = Microgrammar.fromDefinitely({
             pigs: names,
         });
 
-        const mg = Microgrammar.fromDefinitions({
+        const mg = Microgrammar.fromDefinitely({
             dogs: names,
             _separator: "****",
             cats: names,
@@ -407,11 +407,11 @@ describe("Microgrammar", () => {
 
     it("flatten definitions into parent", () => {
         const names = new Rep1Sep(/[a-zA-Z0-9]+/, ",");
-        const nested = Microgrammar.fromDefinitions({
+        const nested = Microgrammar.fromDefinitely({
             pigs: names,
         });
 
-        const mg = Microgrammar.fromDefinitions<CatsDogsAndPigs>({
+        const mg = Microgrammar.fromDefinitely<CatsDogsAndPigs>({
             dogs: names,
             _separator: "****",
             cats: names,
@@ -428,11 +428,11 @@ describe("Microgrammar", () => {
 
     it("opt is flattened and returns undefined", () => {
         const names = new Rep1Sep(/[a-zA-Z0-9]+/, ",");
-        const nested = Microgrammar.fromDefinitions({
+        const nested = Microgrammar.fromDefinitely({
             pigs: names,
         });
 
-        const mg = Microgrammar.fromDefinitions<CatsDogsAndPigs>({
+        const mg = Microgrammar.fromDefinitely<CatsDogsAndPigs>({
             dogs: new Opt(names),
             _separator: "****",
             cats: names,
@@ -459,9 +459,9 @@ describe("Microgrammar", () => {
 class StringGrammar {
 
     public static readonly stringTextPattern =
-        new Rep(new Alt("\\\"", /[^"]/)); // (?:\\"|[^"])*/;
+    new Rep(new Alt("\\\"", /[^"]/)); // (?:\\"|[^"])*/;
 
-    public static readonly stringGrammar: Microgrammar<any> = Microgrammar.fromDefinitions<any>({
+    public static readonly stringGrammar: Microgrammar<any> = Microgrammar.fromDefinitely<any>({
         foo: ctx => {
             console.log("commence match");
         },

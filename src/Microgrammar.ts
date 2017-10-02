@@ -66,7 +66,7 @@ export class Microgrammar<T> implements Term {
         return new Updatable<T>(matches, content);
     }
 
-    public static fromDefinitions<T>(definitions: {}): Microgrammar<T> {
+    public static fromDefinitely<T>(definitions: {}): Microgrammar<T> {
         return new Microgrammar<T>(Concat.of(definitions));
     }
 
@@ -163,7 +163,7 @@ export abstract class MatchingMachine {
      * @param l listeners observing input characters as they are read
      */
     public consume(input: string | InputStream, parseContext = {}, l?: Listeners): void {
-        const omg = this.observer ? Microgrammar.fromDefinitions(this.observer) : undefined;
+        const omg = this.observer ? Microgrammar.fromDefinitely(this.observer) : undefined;
 
         let currentMatcher: MatchingLogic = this.matcher;
         const stream = toInputStream(input);
