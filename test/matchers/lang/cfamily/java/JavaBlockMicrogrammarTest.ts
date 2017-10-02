@@ -1,7 +1,7 @@
 import assert = require("power-assert");
 
 import { JavaBlock, JavaParenthesizedExpression } from "../../../../../src/matchers/lang/cfamily/java/JavaBody";
-import { Microgrammar } from "../../../../../src/Microgrammar";
+import { Microgrammart } from "../../../../../src/Microgrammar";
 
 describe("JavaBlock microgrammars", () => {
 
@@ -22,7 +22,7 @@ describe("JavaBlock microgrammars", () => {
 
 export const JAVA_IDENTIFIER = /[A-Za-z][a-zA-Z0-9]+/;
 
-const METHOD_GRAMMAR = Microgrammar.fromDefinitions<ChangeControledMethod>({
+const METHOD_GRAMMAR = Microgrammart.fromDefinitions<ChangeControledMethod>({
     _visibilityModifier: "public",
     type: JAVA_IDENTIFIER,
     name: JAVA_IDENTIFIER,

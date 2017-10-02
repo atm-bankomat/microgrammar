@@ -9,7 +9,7 @@ import { JavaBlock } from "../src/matchers/lang/cfamily/java/JavaBody";
 import { NestingDepthStateMachine } from "../src/matchers/lang/cfamily/NestingDepthStateMachine";
 import { DoubleString } from "../src/matchers/lang/cfamily/States";
 import { MatchFailureReport, MatchPrefixResult, matchPrefixSuccess } from "../src/MatchPrefixResult";
-import { Microgrammar } from "../src/Microgrammar";
+import { Microgrammart } from "../src/Microgrammar";
 import { when } from "../src/Ops";
 import { TerminalPatternMatch } from "../src/PatternMatch";
 
@@ -42,12 +42,12 @@ describe("InputStateListener", () => {
                 return new MatchFailureReport("id", is.offset, {}, "wrong");
             }
         }
-        const m = Microgrammar.fromDefinitions({
+        const m = Microgrammart.fromDefinitions({
             curly: new MatchCurlyButNotAfter$(),
         });
         const input = "this is a { without $ and this is one after ${ and this is ${ and { too";
 
-        const matches = m.findMatches(input, {}, { l: new Listener()});
+        const matches = m.findMatches(input, {}, { l: new Listener() });
         assert(matches.length === 2);
     });
 
@@ -63,7 +63,7 @@ describe("InputStateListener", () => {
             }
         }
 
-        const m = Microgrammar.fromDefinitions({
+        const m = Microgrammart.fromDefinitions({
             at: new AtNotInString(),
         });
         const input = `
@@ -82,10 +82,10 @@ public class Foo {
     });
 
     it("tracks nesting depth 4 statement", () => {
-        const m = Microgrammar.fromDefinitions<any>({
+        const m = Microgrammart.fromDefinitions<any>({
             toFlag: when(JavaBlock, _ => true, is => (is.listeners.depthCount as NestingDepthStateMachine).depth >= 4),
         });
-        const matches = m.findMatches(DeeplyNested, {}, {depthCount: new NestingDepthStateMachine() });
+        const matches = m.findMatches(DeeplyNested, {}, { depthCount: new NestingDepthStateMachine() });
         assert(matches.length === 1);
         assert(matches[0].toFlag.block, JSON.stringify(matches[0]));
         assert(new CFamilyLangHelper().canonicalize(matches[0].toFlag.block) === 'println("too deeply nested");');

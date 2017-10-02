@@ -1,5 +1,5 @@
 
-import { Microgrammar } from "../../src/Microgrammar";
+import { Microgrammart } from "../../src/Microgrammar";
 import { Alt, Opt } from "../../src/Ops";
 import { RepSep } from "../../src/Rep";
 
@@ -89,7 +89,7 @@ class MethodSignatureGrammar {
 
     public javaAnnotationGrammar = new AnnotationGrammar();
 
-    public readonly methodSignature = Microgrammar.fromDefinitions({
+    public readonly methodSignature = Microgrammart.fromDefinitions({
         annotations: new RepSep({
             annotation: this.javaAnnotationGrammar.annotation,
         }, ","),
@@ -116,27 +116,27 @@ export class AnnotationGrammar {
     public readonly javaIdentifierPattern = /[a-zA-Z_$][a-zA-Z0-9_$]*/;
     public readonly javaTypePattern = /[a-zA-Z_$\.][a-zA-Z0-9_$\.]*/;
 
-    public readonly javaType = Microgrammar.fromDefinitions({
+    public readonly javaType = Microgrammart.fromDefinitions({
         text: this.javaTypePattern,
         $id: "javaType",
     });
 
-    public readonly stringText = Microgrammar.
-    fromDefinitions({
-        _p1: '"',
-        text: takeUntil('"'),
-        _p2: '"',
-        $id: "stringText",
-    });
+    public readonly stringText = Microgrammart.
+        fromDefinitions({
+            _p1: '"',
+            text: takeUntil('"'),
+            _p2: '"',
+            $id: "stringText",
+        });
 
-    public readonly keyValuePairTerm = Microgrammar.fromDefinitions({
+    public readonly keyValuePairTerm = Microgrammart.fromDefinitions({
         key: this.javaIdentifierPattern,
         _eq: "=",
         value: new Alt(this.javaType, this.stringText),
         $id: "keyValuePair",
     });
 
-    public readonly keyValuePairs = Microgrammar.fromDefinitions({
+    public readonly keyValuePairs = Microgrammart.fromDefinitions({
         pairs: new RepSep({
             pair: this.keyValuePairTerm,
         }, ","),
@@ -144,10 +144,10 @@ export class AnnotationGrammar {
     });
 
     public readonly annotation =
-        this.specificAnnotation(this.javaIdentifierPattern);
+    this.specificAnnotation(this.javaIdentifierPattern);
 
     public specificAnnotation(annotationName: string | RegExp) {
-        return Microgrammar.fromDefinitions({
+        return Microgrammart.fromDefinitions({
             _amp: "@",
             name: annotationName,
             params: new Opt({

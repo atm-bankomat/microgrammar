@@ -1,12 +1,12 @@
-import {ChangeSet} from "../../src/internal/ChangeSet";
-import {isSuccessfulMatch} from "../../src/MatchPrefixResult";
-import {Microgrammar} from "../../src/Microgrammar";
-import {Opt} from "../../src/Ops";
+import { ChangeSet } from "../../src/internal/ChangeSet";
+import { isSuccessfulMatch } from "../../src/MatchPrefixResult";
+import { Microgrammart } from "../../src/Microgrammar";
+import { Opt } from "../../src/Ops";
 
 import * as assert from "power-assert";
 
-import {Integer} from "../../src/Primitives";
-import {RepSep} from "../../src/Rep";
+import { Integer } from "../../src/Primitives";
+import { RepSep } from "../../src/Rep";
 
 describe("MicrogrammarUpdateTest", () => {
 
@@ -16,7 +16,7 @@ describe("MicrogrammarUpdateTest", () => {
             name: /[a-zA-Z0-9]+/,
             rx: ">",
         };
-        return Microgrammar.fromDefinitions({
+        return Microgrammart.fromDefinitions({
             first: element,
             second: new Opt(element),
         });
@@ -25,7 +25,7 @@ describe("MicrogrammarUpdateTest", () => {
     it("update name in late element at start", () => {
         const content = "<first><second>";
         const result = xmlGrammar().findMatches(content) as any;
-        const updater = Microgrammar.updatableMatch(result[0], content);
+        const updater = Microgrammart.updatableMatch(result[0], content);
         updater.second = "<newSecond>";
         assert(updater.newContent() === "<first><newSecond>");
         const cs = new ChangeSet(content);
@@ -35,7 +35,7 @@ describe("MicrogrammarUpdateTest", () => {
     });
 
     it("update nested element", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammart.fromDefinitions({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,
@@ -47,7 +47,7 @@ describe("MicrogrammarUpdateTest", () => {
         const line = "Jenny 46 Coonamble, Mosman";
 
         const result = person.findMatches(line) as any;
-        const updater = Microgrammar.updatableMatch(result[0], line);
+        const updater = Microgrammart.updatableMatch(result[0], line);
         updater.address.number = 45;
         const firstUpdate = updater.newContent();
         assert(firstUpdate === line.replace("46", "45"));
@@ -57,7 +57,7 @@ describe("MicrogrammarUpdateTest", () => {
     });
 
     it("update deeply nested element", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammart.fromDefinitions({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,
@@ -75,7 +75,7 @@ describe("MicrogrammarUpdateTest", () => {
         const line = "Jenny 46 Coonamble, Chatswood 2067 AU";
         const result = person.findMatches(line) as any;
         assert(result[0].address.suburb.country.code === "AU");
-        const updater = Microgrammar.updatableMatch(result[0], line);
+        const updater = Microgrammart.updatableMatch(result[0], line);
         updater.address.number = 45;
         const firstUpdate = updater.newContent();
         assert(firstUpdate === line.replace("46", "45"));
@@ -87,7 +87,7 @@ describe("MicrogrammarUpdateTest", () => {
     });
 
     it("update multiple deeply nested elements in succession", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammart.fromDefinitions({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,
@@ -105,7 +105,7 @@ describe("MicrogrammarUpdateTest", () => {
         const line = "Jenny 46 Coonamble, Chatswood 2067 AU/David 12 Somewhere, Someplace 40387 US";
         const results = person.findMatches(line) as any;
         assert(results.length === 2);
-        const updatable = Microgrammar.updatable<any>(results, line);
+        const updatable = Microgrammart.updatable<any>(results, line);
         updatable.matches[0].address.suburb.postcode = "2000";
         assert(updatable.matches[0].address.suburb.postcode === "2000");
 
@@ -116,7 +116,7 @@ describe("MicrogrammarUpdateTest", () => {
     });
 
     it("can update a whole section", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammart.fromDefinitions({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,
@@ -134,14 +134,14 @@ describe("MicrogrammarUpdateTest", () => {
         const line = "Jenny 46 Coonamble, Chatswood 2067 AU/David 12 Somewhere, Someplace 40387 US";
         const results = person.findMatches(line) as any;
         assert(results.length === 2);
-        const updatable = Microgrammar.updatable<any>(results, line);
+        const updatable = Microgrammart.updatable<any>(results, line);
         updatable.matches[0].address.suburb = "tarantula";
         assert(updatable.updated() ===
             "Jenny 46 Coonamble, tarantula/David 12 Somewhere, Someplace 40387 US");
     });
 
     it("updating a whole section blocks modifying structure within it", () => {
-        const person = Microgrammar.fromDefinitions({
+        const person = Microgrammart.fromDefinitions({
             name: /[a-zA-Z0-9]+/,
             address: {
                 number: Integer,
@@ -159,7 +159,7 @@ describe("MicrogrammarUpdateTest", () => {
         const line = "Jenny 46 Coonamble, Chatswood 2067 AU/David 12 Somewhere, Someplace 40387 US";
         const results = person.findMatches(line) as any;
         assert(results.length === 2);
-        const updatable = Microgrammar.updatable<any>(results, line);
+        const updatable = Microgrammart.updatable<any>(results, line);
         updatable.matches[0].address.suburb = "tarantula";
         // TODO this should work intuitively, but doesn't. Probably address through documentation
         // assert(updatable.matches[0].address.suburb === "tarantula");
@@ -171,7 +171,7 @@ describe("MicrogrammarUpdateTest", () => {
     // TODO This does not work yet
     it.skip("can update a rep element", () => {
         const input = "I love carrots, apples, lizards, bananas";
-        const mg = Microgrammar.fromString("love ${listItems}", {
+        const mg = Microgrammart.fromString("love ${listItems}", {
             listItems: {
                 commaSeparated: new RepSep(/[a-z]+/, ","),
             },
@@ -183,7 +183,7 @@ describe("MicrogrammarUpdateTest", () => {
             assert(mmmm.listItems.commaSeparated[0] === "carrots");
 
             // how about we also accept a microgrammar as the first arg? ... and all firstMatch on it?
-            const updater: any = Microgrammar.updatableMatch(mmmm, input);
+            const updater: any = Microgrammart.updatableMatch(mmmm, input);
             updater.listItems.commaSeparated[0] = "garbage";
             assert(updater.newContent() === "I love garbage, apples, lizards, bananas");
 
