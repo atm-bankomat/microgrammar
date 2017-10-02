@@ -117,7 +117,7 @@ function main () {
             msg "Published to npm as ${branch_module_name} version ${pkg_version}"
             git_tag="${branch_module_name}-${pkg_version}"
 
-            if ! git checkout -- package.json; then
+            if ! git reset --hard ; then
                 msg "WARNING: I changed package.json and couldn't check out the original"
             fi
         else
